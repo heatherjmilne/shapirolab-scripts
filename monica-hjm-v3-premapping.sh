@@ -414,14 +414,14 @@ echo "...File setup for MEGAN and/or MIA is complete." >> ${PREFIX}_progress_fil
 
 ### MEGAN -- metagenomic analysis. What is the taxonomic makeup of my sequence data?
 
-for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-do
+# for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+# do
 
-# Compare reads to BLAST database
-	blastn -num_threads ${MEGAN_THREADS} -query ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.fasta -db ${BLAST_DATABASE} -outfmt 6 -out ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt # TODO: Set log file
-done
-wait
-echo "...Comparing reads to BLAST database is done." >> ${PREFIX}_progress_file_${DATE}.txt
+# # Compare reads to BLAST database
+# 	blastn -num_threads ${MEGAN_THREADS} -query ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.fasta -db ${BLAST_DATABASE} -outfmt 6 -out ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt # TODO: Set log file
+# done
+# wait
+# echo "...Comparing reads to BLAST database is done." >> ${PREFIX}_progress_file_${DATE}.txt
 
 
 # ### MIA --- Option 1 -- creating a consensus using iterative mapping - use this with shotgun data
@@ -481,11 +481,11 @@ echo "...Comparing reads to BLAST database is done." >> ${PREFIX}_progress_file_
 
 cd ${PROCESSING_OUTPUT}
 
-gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fastq
-gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fasta
-gzip ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt
+# gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fastq
+# gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fasta
+# gzip ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt
 
-echo "...Large files are gzipped."
+# echo "...Large files are gzipped."
 
 # Rscript ${CALC_STATS} BWA_analyses/ SeqPrep_output/ MapDamage_output/ MIA_analyses/
 
