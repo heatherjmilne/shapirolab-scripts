@@ -305,6 +305,7 @@ echo "...BWA alignments with unmerged reads are complete" >> ${PREFIX}_progress_
 ### SAMtools processing 
 # Using -o flag for samtools output file instead of stdout
 SAMLOGFILE=${BWA_OUTPUT}/${SAMPLE}_samtools.log.txt
+
 for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
 do
 # Convert SAM to BAM
