@@ -162,10 +162,10 @@ mkdir MapDamage_output
 
 # SeqPrep envelopes
 
-# SEQPREP_OUTPUT=${PROCESSING_OUTPUT}/SeqPrep_output	    # A directory to store SeqPrep output files
-# SEQPREP_MIN_LENGTH=30                                 	# Removes unmappably short reads. This is a fairly low cut-off
-# SEQPREP_OVERLAP=15                                 	    # Allows for confident merging of reads. Can be reduced to 10 if needed.
-# SEQPREP_LOCATION=/soe/pheintzman/bin/SeqPrep2-master	# To find SeqPrep, if using edser2
+SEQPREP_OUTPUT=${PROCESSING_OUTPUT}/SeqPrep_output	    # A directory to store SeqPrep output files
+SEQPREP_MIN_LENGTH=30                                 	# Removes unmappably short reads. This is a fairly low cut-off
+SEQPREP_OVERLAP=15                                 	    # Allows for confident merging of reads. Can be reduced to 10 if needed.
+SEQPREP_LOCATION=/soe/pheintzman/bin/SeqPrep2-master	# To find SeqPrep, if using edser2
 
 # echo "Minimum read length is set to $SEQPREP_MIN_LENGTH."
 # echo "Merging reads overlapping at $SEQPREP_OVERLAP bases."
@@ -192,28 +192,28 @@ echo "Nucleotide misincorporation frequency set to ${MAX_MISINCORP_FREQUENCY}."
 
 # MEGAN envelopes
 
-# MEGAN_OUTPUT=${PROCESSING_OUTPUT}/MEGAN_analyses                           # A directory to store MEGAN files and output   
-# BLAST_DATABASE=/projects/redser3-notbackedup/ftp/NCBI/BLAST/blastdb/nt     # Location of the BLAST database 
-# MEGAN_THREADS=15                                                           # To speed up analysis
+MEGAN_OUTPUT=${PROCESSING_OUTPUT}/MEGAN_analyses                           # A directory to store MEGAN files and output   
+BLAST_DATABASE=/projects/redser3-notbackedup/ftp/NCBI/BLAST/blastdb/nt     # Location of the BLAST database 
+MEGAN_THREADS=15                                                           # To speed up analysis
 
 
 # MIA envelopes
 
-# MIA_OUTPUT=${PROCESSING_OUTPUT}/MIA_analyses
-# ANCIENT_DNA_MATRIX=/projects/redser3-notbackedup/projects/pheintzman/Scripts/ancient.submat.txt
-# MIA_COVERAGE_FILTER=/projects/redser3-notbackedup/projects/pheintzman/Scripts/mia_consensus_coverage_filter.pl
-# FASTX_TOOLKIT=/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src
-# MIA_COVERAGE_FILTER_ANDRE=/projects/redser3-notbackedup/projects/common_jobs/coverage_filter_3.pl
+MIA_OUTPUT=${PROCESSING_OUTPUT}/MIA_analyses
+ANCIENT_DNA_MATRIX=/projects/redser3-notbackedup/projects/pheintzman/Scripts/ancient.submat.txt
+MIA_COVERAGE_FILTER=/projects/redser3-notbackedup/projects/pheintzman/Scripts/mia_consensus_coverage_filter.pl
+FASTX_TOOLKIT=/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src
+MIA_COVERAGE_FILTER_ANDRE=/projects/redser3-notbackedup/projects/common_jobs/coverage_filter_3.pl
 
 # Prinseq envelopes
 
-# PRINSEQ_LITE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl
-# PRINSEQ_GRAPHS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-graphs.pl
-# PRINSEQ_STATS=${PROCESSING_OUTPUT}/PRINSEQ_stats
-# COMPLEXITY_METHOD=dust			    # dust is the standard used by BLAST. The entropy method is an alternative, but is not widely used.
-# COMPLEXITY_THRESHOLD=7			    # Pretty low, but follows the PRINSEQ_LITE manual. Recommends 70 if using entropy.
-# COMBINE_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/combinePairedEndReads.pl
-# SPLIT_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/splitPairedEndReads.pl
+PRINSEQ_LITE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl
+PRINSEQ_GRAPHS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-graphs.pl
+PRINSEQ_STATS=${PROCESSING_OUTPUT}/PRINSEQ_stats
+COMPLEXITY_METHOD=dust			    # dust is the standard used by BLAST. The entropy method is an alternative, but is not widely used.
+COMPLEXITY_THRESHOLD=7			    # Pretty low, but follows the PRINSEQ_LITE manual. Recommends 70 if using entropy.
+COMBINE_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/combinePairedEndReads.pl
+SPLIT_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/splitPairedEndReads.pl
 
 
 
@@ -305,7 +305,6 @@ echo "...BWA alignments with unmerged reads are complete" >> ${PREFIX}_progress_
 ### SAMtools processing 
 # Using -o flag for samtools output file instead of stdout
 SAMLOGFILE=${BWA_OUTPUT}/${SAMPLE}_samtools.log.txt
-
 for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
 do
 # Convert SAM to BAM

@@ -171,11 +171,11 @@ echo "Minimum read length is set to $SEQPREP_MIN_LENGTH."
 echo "Merging reads overlapping at $SEQPREP_OVERLAP bases."
 # BWA and SAMtools envelopes
 
-# BWA_OUTPUT=${PROCESSING_OUTPUT}/BWA_analyses	                                                # A directory to store BWA intermediate files and output   
-# INDEX_ALGORITHM=bwtsw	                                                                        # If reference is <2Gb use 'is', if >2Gb use 'bwtsw'
-# SEED_DISABLE=1024	                                                                            # Following ancient DNA data processing protocols
-# BWA_THREADS=15	                                                                                # To speed up analysis
-# BAM_MIN_QUALITY=20	                                                                            # Provides a fairly low cutoff
+BWA_OUTPUT=${PROCESSING_OUTPUT}/BWA_analyses	                                                # A directory to store BWA intermediate files and output   
+INDEX_ALGORITHM=bwtsw	                                                                        # If reference is <2Gb use 'is', if >2Gb use 'bwtsw'
+SEED_DISABLE=1024	                                                                            # Following ancient DNA data processing protocols
+BWA_THREADS=15	                                                                                # To speed up analysis
+BAM_MIN_QUALITY=20	                                                                            # Provides a fairly low cutoff
 
 # echo "Seed disabled for seedless mapping."
 # echo "Minimum mapping quality is set to $BAM_MIN_QUALITY phred."
@@ -183,10 +183,10 @@ echo "Merging reads overlapping at $SEQPREP_OVERLAP bases."
 
 # mapDamage envelopes - make sure REFERENCE_SEQUENCE= REFERENCE_NAME and BWA_OUTPUT are enabled
 
-# MAPDAMAGE2=/soe/pheintzman/bin/mapDamage-master/bin/mapDamage	        # To assess damage rates in the dataset
-# MAX_MISINCORP_FREQUENCY=0.3	                                           	# Use 0.3 if not too badly damaged, use 0.5 if badly damaged
-# READ_PLOT_LENGTH=25	                                               	    # The number of nucleotides to plot at the 5' and 3' ends of the read
-# MAX_READ_LENGTH=150	                                           	        # The maximum read length to consider
+MAPDAMAGE2=/soe/pheintzman/bin/mapDamage-master/bin/mapDamage	        # To assess damage rates in the dataset
+MAX_MISINCORP_FREQUENCY=0.3	                                           	# Use 0.3 if not too badly damaged, use 0.5 if badly damaged
+READ_PLOT_LENGTH=25	                                               	    # The number of nucleotides to plot at the 5' and 3' ends of the read
+MAX_READ_LENGTH=150	                                           	        # The maximum read length to consider
 
 # echo "Nucleotide misincorporation frequency set to ${MAX_MISINCORP_FREQUENCY}."
 
@@ -195,15 +195,14 @@ echo "Merging reads overlapping at $SEQPREP_OVERLAP bases."
 MEGAN_OUTPUT=${PROCESSING_OUTPUT}/MEGAN_analyses                           # A directory to store MEGAN files and output   
 BLAST_DATABASE=/projects/redser3-notbackedup/ftp/NCBI/BLAST/blastdb/nt     # Location of the BLAST database 
 MEGAN_THREADS=15                                                           # To speed up analysis
-FASTX_TOOLKIT=/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src
 
 # MIA envelopes
 
-# MIA_OUTPUT=${PROCESSING_OUTPUT}/MIA_analyses
-# ANCIENT_DNA_MATRIX=/projects/redser3-notbackedup/projects/pheintzman/Scripts/ancient.submat.txt
-# MIA_COVERAGE_FILTER=/projects/redser3-notbackedup/projects/pheintzman/Scripts/mia_consensus_coverage_filter.pl
-# FASTX_TOOLKIT=/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src
-# MIA_COVERAGE_FILTER_ANDRE=/projects/redser3-notbackedup/projects/common_jobs/coverage_filter_3.pl
+MIA_OUTPUT=${PROCESSING_OUTPUT}/MIA_analyses
+ANCIENT_DNA_MATRIX=/projects/redser3-notbackedup/projects/pheintzman/Scripts/ancient.submat.txt
+MIA_COVERAGE_FILTER=/projects/redser3-notbackedup/projects/pheintzman/Scripts/mia_consensus_coverage_filter.pl
+FASTX_TOOLKIT=/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src
+MIA_COVERAGE_FILTER_ANDRE=/projects/redser3-notbackedup/projects/common_jobs/coverage_filter_3.pl
 
 # Prinseq envelopes
 PRINSEQ_LITE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl
