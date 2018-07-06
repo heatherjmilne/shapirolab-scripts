@@ -63,7 +63,7 @@
 echo "Number of arguments: $#"
 # test if we have enough arguments, exit with warning if we don't
 
-if [ $# -lt 7 ] ### There was a TYPO here!! changed to -lt from -ge
+if [ $# -lt 4 ] ### There was a TYPO here!! changed to -lt from -ge
 then
 	echo "Not enough arguments!"
 	echo "Usage $0 -p=[prefix] -t=[taxon] -ref=[ref_fasta_path] -refname=[ref_name]"
