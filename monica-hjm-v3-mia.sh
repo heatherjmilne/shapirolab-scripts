@@ -162,20 +162,20 @@ mkdir MIA_analyses
 
 # SeqPrep envelopes
 
-# SEQPREP_OUTPUT=${PROCESSING_OUTPUT}/SeqPrep_output	    # A directory to store SeqPrep output files
-# SEQPREP_MIN_LENGTH=30                                 	# Removes unmappably short reads. This is a fairly low cut-off
-# SEQPREP_OVERLAP=15                                 	    # Allows for confident merging of reads. Can be reduced to 10 if needed.
-# SEQPREP_LOCATION=/soe/pheintzman/bin/SeqPrep2-master	# To find SeqPrep, if using edser2
+SEQPREP_OUTPUT=${PROCESSING_OUTPUT}/SeqPrep_output	    # A directory to store SeqPrep output files
+SEQPREP_MIN_LENGTH=30                                 	# Removes unmappably short reads. This is a fairly low cut-off
+SEQPREP_OVERLAP=15                                 	    # Allows for confident merging of reads. Can be reduced to 10 if needed.
+SEQPREP_LOCATION=/soe/pheintzman/bin/SeqPrep2-master	# To find SeqPrep, if using edser2
 
 # echo "Minimum read length is set to $SEQPREP_MIN_LENGTH."
 # echo "Merging reads overlapping at $SEQPREP_OVERLAP bases."
 # BWA and SAMtools envelopes
 
-# BWA_OUTPUT=${PROCESSING_OUTPUT}/BWA_analyses	                                                # A directory to store BWA intermediate files and output   
-# INDEX_ALGORITHM=bwtsw	                                                                        # If reference is <2Gb use 'is', if >2Gb use 'bwtsw'
-# SEED_DISABLE=1024	                                                                            # Following ancient DNA data processing protocols
-# BWA_THREADS=15	                                                                                # To speed up analysis
-# BAM_MIN_QUALITY=20	                                                                            # Provides a fairly low cutoff
+BWA_OUTPUT=${PROCESSING_OUTPUT}/BWA_analyses	                                                # A directory to store BWA intermediate files and output   
+INDEX_ALGORITHM=bwtsw	                                                                        # If reference is <2Gb use 'is', if >2Gb use 'bwtsw'
+SEED_DISABLE=1024	                                                                            # Following ancient DNA data processing protocols
+BWA_THREADS=15	                                                                                # To speed up analysis
+BAM_MIN_QUALITY=20	                                                                            # Provides a fairly low cutoff
 
 # echo "Seed disabled for seedless mapping."
 # echo "Minimum mapping quality is set to $BAM_MIN_QUALITY phred."
@@ -183,43 +183,43 @@ mkdir MIA_analyses
 
 # mapDamage envelopes - make sure REFERENCE_SEQUENCE= REFERENCE_NAME and BWA_OUTPUT are enabled
 
-# MAPDAMAGE2=/soe/pheintzman/bin/mapDamage-master/bin/mapDamage	        # To assess damage rates in the dataset
-# MAX_MISINCORP_FREQUENCY=0.3	                                           	# Use 0.3 if not too badly damaged, use 0.5 if badly damaged
-# READ_PLOT_LENGTH=25	                                               	    # The number of nucleotides to plot at the 5' and 3' ends of the read
-# MAX_READ_LENGTH=150	                                           	        # The maximum read length to consider
+MAPDAMAGE2=/soe/pheintzman/bin/mapDamage-master/bin/mapDamage	        # To assess damage rates in the dataset
+MAX_MISINCORP_FREQUENCY=0.3	                                           	# Use 0.3 if not too badly damaged, use 0.5 if badly damaged
+READ_PLOT_LENGTH=25	                                               	    # The number of nucleotides to plot at the 5' and 3' ends of the read
+MAX_READ_LENGTH=150	                                           	        # The maximum read length to consider
 
 # echo "Nucleotide misincorporation frequency set to ${MAX_MISINCORP_FREQUENCY}."
 
 # MEGAN envelopes
 
-# MEGAN_OUTPUT=${PROCESSING_OUTPUT}/MEGAN_analyses                           # A directory to store MEGAN files and output   
-# BLAST_DATABASE=/projects/redser3-notbackedup/ftp/NCBI/BLAST/blastdb/nt     # Location of the BLAST database 
-# MEGAN_THREADS=15                                                           # To speed up analysis
+MEGAN_OUTPUT=${PROCESSING_OUTPUT}/MEGAN_analyses                           # A directory to store MEGAN files and output   
+BLAST_DATABASE=/projects/redser3-notbackedup/ftp/NCBI/BLAST/blastdb/nt     # Location of the BLAST database 
+MEGAN_THREADS=15                                                           # To speed up analysis
 
 
 # MIA envelopes
 
-# MIA_OUTPUT=${PROCESSING_OUTPUT}/MIA_analyses
-# ANCIENT_DNA_MATRIX=/projects/redser3-notbackedup/projects/pheintzman/Scripts/ancient.submat.txt
-# MIA_COVERAGE_FILTER=/projects/redser3-notbackedup/projects/pheintzman/Scripts/mia_consensus_coverage_filter.pl
-# FASTX_TOOLKIT=/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src
-# MIA_COVERAGE_FILTER_ANDRE=/projects/redser3-notbackedup/projects/common_jobs/coverage_filter_3.pl
+MIA_OUTPUT=${PROCESSING_OUTPUT}/MIA_analyses
+ANCIENT_DNA_MATRIX=/projects/redser3-notbackedup/projects/pheintzman/Scripts/ancient.submat.txt
+MIA_COVERAGE_FILTER=/projects/redser3-notbackedup/projects/pheintzman/Scripts/mia_consensus_coverage_filter.pl
+FASTX_TOOLKIT=/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src
+MIA_COVERAGE_FILTER_ANDRE=/projects/redser3-notbackedup/projects/common_jobs/coverage_filter_3.pl
 
 # Prinseq envelopes
 
-# PRINSEQ_LITE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl
-# PRINSEQ_GRAPHS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-graphs.pl
-# PRINSEQ_STATS=${PROCESSING_OUTPUT}/PRINSEQ_stats
-# COMPLEXITY_METHOD=dust			    # dust is the standard used by BLAST. The entropy method is an alternative, but is not widely used.
-# COMPLEXITY_THRESHOLD=7			    # Pretty low, but follows the PRINSEQ_LITE manual. Recommends 70 if using entropy.
-# COMBINE_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/combinePairedEndReads.pl
-# SPLIT_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/splitPairedEndReads.pl
+PRINSEQ_LITE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl
+PRINSEQ_GRAPHS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-graphs.pl
+PRINSEQ_STATS=${PROCESSING_OUTPUT}/PRINSEQ_stats
+COMPLEXITY_METHOD=dust			    # dust is the standard used by BLAST. The entropy method is an alternative, but is not widely used.
+COMPLEXITY_THRESHOLD=7			    # Pretty low, but follows the PRINSEQ_LITE manual. Recommends 70 if using entropy.
+COMBINE_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/combinePairedEndReads.pl
+SPLIT_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/splitPairedEndReads.pl
 
 
 
 # Other envelopes
 
-# GET_INSERT_SIZE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/getinsertsize.py
+GET_INSERT_SIZE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/getinsertsize.py
 
 
 # for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
@@ -484,15 +484,15 @@ echo "11. MIA analyses are complete" >> ${PREFIX}_progress_file_${DATE}.txt
 
 cd ${PROCESSING_OUTPUT}
 
-# gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fastq
-# gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fasta
-# gzip ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt
+gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fastq
+gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fasta
+gzip ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt
 
-# echo "...Large files are gzipped."
+echo "...Large files are gzipped."
 
-# Rscript ${CALC_STATS} BWA_analyses/ SeqPrep_output/ MapDamage_output/ MIA_analyses/
+Rscript ${CALC_STATS} BWA_analyses/ SeqPrep_output/ MapDamage_output/ MIA_analyses/
 
-# echo "...Summary statistics are estimated!"
+echo "...Summary statistics are estimated!"
 
 mv ${PREFIX}-sample-list-${DATE}.txt ${PROCESSING_OUTPUT}/Sample_lists_and_progress_files
 mv ${PREFIX}_progress_file_${DATE}.txt ${PROCESSING_OUTPUT}/Sample_lists_and_progress_files
