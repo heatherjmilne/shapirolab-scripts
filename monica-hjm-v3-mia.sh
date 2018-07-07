@@ -63,7 +63,7 @@
 echo "Number of arguments: $#"
 # test if we have enough arguments, exit with warning if we don't
 
-if [ $# -lt 7 ] ### There was a TYPO here!! changed to -lt from -ge
+if [ $# -lt 4 ] ### There was a TYPO here!! changed to -lt from -ge
 then
 	echo "Not enough arguments!"
 	echo "Usage $0 -p=[prefix] -dir=[fastq_path] -t=[taxon] -ref=[ref_fasta_path] -refname=[ref_name] -mref=[mito_fasta_path] -mname=[mito_name]"
@@ -83,38 +83,38 @@ case $i in
 	echo "PREFIX=${PREFIX}"
 	shift
 	;;
-	-dir=*|--raw-read-dir=*)
-	RAW_READ_DIRECTORY="${i#*=}"
-	if [ -e "$RAW_READ_DIRECTORY" ]
-	then
-    	echo "RAW READ DIRECTORY=${RAW_READ_DIRECTORY}"
-	else
-    	echo "RAW READ DIRECTORY $RAW_READ_DIRECTORY does not exist, exiting script"
-    	exit 1
-	fi
-	shift
-	;;
+	# -dir=*|--raw-read-dir=*)
+	# RAW_READ_DIRECTORY="${i#*=}"
+	# if [ -e "$RAW_READ_DIRECTORY" ]
+	# then
+ #    	echo "RAW READ DIRECTORY=${RAW_READ_DIRECTORY}"
+	# else
+ #    	echo "RAW READ DIRECTORY $RAW_READ_DIRECTORY does not exist, exiting script"
+ #    	exit 1
+	# fi
+	# shift
+	# ;;
 	-t=*|--taxon=*)
 	TAXON="${i#*=}"
 	echo "TAXON=$TAXON"
 	shift
 	;;
-	-ref=*|--ref-fasta=*)
-	REFERENCE_SEQUENCE="${i#*=}"
-	if [ -e "$REFERENCE_SEQUENCE" ]
-	then
-    	echo "REFERENCE SEQUENCE=$REFERENCE_SEQUENCE"
-	else
-    	echo "REFERENCE SEQUENCE $REFERENCE_SEQUENCE does not exist, exiting script"
-    	exit 1
-	fi
-	shift
-	;;
-	-refname=*|--ref-name=*)
-	REFERENCE_NAME="${i#*=}"
-	echo "REFERENCE NAME=$REFERENCE_NAME"
-	shift
-	;;
+	# -ref=*|--ref-fasta=*)
+	# REFERENCE_SEQUENCE="${i#*=}"
+	# if [ -e "$REFERENCE_SEQUENCE" ]
+	# then
+ #    	echo "REFERENCE SEQUENCE=$REFERENCE_SEQUENCE"
+	# else
+ #    	echo "REFERENCE SEQUENCE $REFERENCE_SEQUENCE does not exist, exiting script"
+ #    	exit 1
+	# fi
+	# shift
+	# ;;
+	# -refname=*|--ref-name=*)
+	# REFERENCE_NAME="${i#*=}"
+	# echo "REFERENCE NAME=$REFERENCE_NAME"
+	# shift
+	# ;;
 	-mref=*|--mito-ref-fasta=*)
 	MIA_REFERENCE_SEQUENCE="${i#*=}"
 	if [ -e "$MIA_REFERENCE_SEQUENCE" ]
