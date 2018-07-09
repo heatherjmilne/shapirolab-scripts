@@ -482,7 +482,7 @@ echo "...Intermediate BWA files have been removed." >> ${PREFIX}_progress_file_$
 # # wait
 # # echo "11. MIA analyses are complete" >> ${PREFIX}_progress_file_${DATE}.txt
 
-cd ${PROCESSING_OUTPUT}
+# cd ${PROCESSING_OUTPUT}
 
 # gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fastq
 # gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fasta
@@ -490,9 +490,9 @@ cd ${PROCESSING_OUTPUT}
 
 # echo "...Large files are gzipped."
 
-Rscript ${CALC_STATS} BWA_analyses/ SeqPrep_output/ MapDamage_output/ MIA_analyses/
+# Rscript ${CALC_STATS} BWA_analyses/ SeqPrep_output/ MapDamage_output/ MIA_analyses/
 
-echo "...Summary statistics are estimated!"
+# echo "...Summary statistics are estimated!"
 
 # mv ${PREFIX}-sample-list-${DATE}.txt ${PROCESSING_OUTPUT}/Sample_lists_and_progress_files
 # mv ${PREFIX}_progress_file_${DATE}.txt ${PROCESSING_OUTPUT}/Sample_lists_and_progress_files
