@@ -63,10 +63,10 @@
 echo "Number of arguments: $#"
 # test if we have enough arguments, exit with warning if we don't
 
-if [ $# -lt 3 ] ### There was a TYPO here!! changed to -lt from -ge
+if [ $# -lt 2 ] ### There was a TYPO here!! changed to -lt from -ge
 then
 	echo "Not enough arguments!"
-	echo "Usage $0 -p=[prefix] -dir=[fastq_path] -t=[taxon]"
+	echo "Usage $0 -p=[prefix] -t=[taxon]"
 	exit 1
 fi
 
@@ -83,17 +83,17 @@ case $i in
 	echo "PREFIX=${PREFIX}"
 	shift
 	;;
-	-dir=*|--raw-read-dir=*)
-	RAW_READ_DIRECTORY="${i#*=}"
-	if [ -e "$RAW_READ_DIRECTORY" ]
-	then
-    	echo "RAW READ DIRECTORY=${RAW_READ_DIRECTORY}"
-	else
-    	echo "RAW READ DIRECTORY $RAW_READ_DIRECTORY does not exist, exiting script"
-    	exit 1
-	fi
-	shift
-	;;
+	# -dir=*|--raw-read-dir=*)
+	# RAW_READ_DIRECTORY="${i#*=}"
+	# if [ -e "$RAW_READ_DIRECTORY" ]
+	# then
+ #    	echo "RAW READ DIRECTORY=${RAW_READ_DIRECTORY}"
+	# else
+ #    	echo "RAW READ DIRECTORY $RAW_READ_DIRECTORY does not exist, exiting script"
+ #    	exit 1
+	# fi
+	# shift
+	# ;;
 	-t=*|--taxon=*)
 	TAXON="${i#*=}"
 	echo "TAXON=$TAXON"
@@ -135,7 +135,7 @@ esac
 done
 
 
-mkdir ${PWD}/${PREFIX}_shotgun_data_processing_${DATE} # output is created in the same folder, where you run the script.
+# mkdir ${PWD}/${PREFIX}_shotgun_data_processing_${DATE} # output is created in the same folder, where you run the script.
 
 # General envelopes
 PROCESSING_OUTPUT=${PWD}/${PREFIX}_shotgun_data_processing_${DATE}
@@ -145,17 +145,17 @@ CALC_STATS=/projects/redser3-notbackedup/projects/alisa_beringia/scripts/calcula
 
 ### Initial setting up of directories
 
-cd ${RAW_READ_DIRECTORY}
-bash ${GET_SAMPLES} ${PREFIX} f > ${PROCESSING_OUTPUT}/${PREFIX}-sample-list-${DATE}.txt
+# cd ${RAW_READ_DIRECTORY}
+# bash ${GET_SAMPLES} ${PREFIX} f > ${PROCESSING_OUTPUT}/${PREFIX}-sample-list-${DATE}.txt
 
 cd ${PROCESSING_OUTPUT}
 
-mkdir Sample_lists_and_progress_files
-mkdir Raw_data_symlinks
-mkdir SeqPrep_output
+# mkdir Sample_lists_and_progress_files
+# mkdir Raw_data_symlinks
+# mkdir SeqPrep_output
 # mkdir BWA_analyses
 # mkdir MapDamage_output
-# mkdir MEGAN_analyses
+mkdir MEGAN_analyses
 # mkdir MIA_analyses
 
 
@@ -219,61 +219,61 @@ SPLIT_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts
 # GET_INSERT_SIZE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/getinsertsize.py
 
 
-for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-do
-	gzip -d ${RAW_READ_DIRECTORY}/${SAMPLE}*.fastq.gz
-	wait
-	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L001_R1_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R1_001.fastq
-	wait
-	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L001_R2_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R2_001.fastq
-	wait
-done
-wait
-echo "...Initial data processing is complete" >> ${PREFIX}_progress_file_${DATE}.txt
+# for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+# do
+# 	gzip -d ${RAW_READ_DIRECTORY}/${SAMPLE}*.fastq.gz
+# 	wait
+# 	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L001_R1_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R1_001.fastq
+# 	wait
+# 	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L001_R2_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R2_001.fastq
+# 	wait
+# done
+# wait
+# echo "...Initial data processing is complete" >> ${PREFIX}_progress_file_${DATE}.txt
 
-### SeqPrep -- removing adapters and merging reads. Overlap (-o) is set to 20, minimum length (-l) is set to 25, minimum quality (-q) is set to 15.
+# ### SeqPrep -- removing adapters and merging reads. Overlap (-o) is set to 20, minimum length (-l) is set to 25, minimum quality (-q) is set to 15.
 
-for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-do
-	${SEQPREP_LOCATION}/SeqPrep2 -f ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R1_001.fastq -r ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R2_001.fastq -1 ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.fastq.gz -2 ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.fastq.gz -q 15 -L ${SEQPREP_MIN_LENGTH} -A AGATCGGAAGAGCACACGTC -B AGATCGGAAGAGCGTCGTGT -s ${SEQPREP_OUTPUT}/${SAMPLE}_merged.fastq.gz -E ${SEQPREP_OUTPUT}/${SAMPLE}_readable_alignment.txt.gz -o ${SEQPREP_OVERLAP} -d 1 -C ATCTCGTATGCCGTCTTCTGCTTG -D GATCTCGGTGGTCGCCGTATCATT >> ${SEQPREP_OUTPUT}/${SAMPLE}_SeqPrep.log.txt 2>&1
-	wait
-	gzip -d ${SEQPREP_OUTPUT}/${SAMPLE}*.gz
-	wait
-	gzip ${RAW_READ_DIRECTORY}/${SAMPLE}*.fastq
-	wait
-done
-wait
-echo "...Adapter trimming and merging of reads is complete" >> ${PREFIX}_progress_file_${DATE}.txt
+# for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+# do
+# 	${SEQPREP_LOCATION}/SeqPrep2 -f ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R1_001.fastq -r ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R2_001.fastq -1 ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.fastq.gz -2 ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.fastq.gz -q 15 -L ${SEQPREP_MIN_LENGTH} -A AGATCGGAAGAGCACACGTC -B AGATCGGAAGAGCGTCGTGT -s ${SEQPREP_OUTPUT}/${SAMPLE}_merged.fastq.gz -E ${SEQPREP_OUTPUT}/${SAMPLE}_readable_alignment.txt.gz -o ${SEQPREP_OVERLAP} -d 1 -C ATCTCGTATGCCGTCTTCTGCTTG -D GATCTCGGTGGTCGCCGTATCATT >> ${SEQPREP_OUTPUT}/${SAMPLE}_SeqPrep.log.txt 2>&1
+# 	wait
+# 	gzip -d ${SEQPREP_OUTPUT}/${SAMPLE}*.gz
+# 	wait
+# 	gzip ${RAW_READ_DIRECTORY}/${SAMPLE}*.fastq
+# 	wait
+# done
+# wait
+# echo "...Adapter trimming and merging of reads is complete" >> ${PREFIX}_progress_file_${DATE}.txt
 
 
-### Filtering reads for low complexity sequences
+# ### Filtering reads for low complexity sequences
 
-for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-do
-# Remove low complexity reads from merged files
-	perl ${PRINSEQ_LITE} -fastq ${SEQPREP_OUTPUT}/${SAMPLE}_merged.fastq -out_good ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered -out_bad null -lc_method ${COMPLEXITY_METHOD} -lc_threshold ${COMPLEXITY_THRESHOLD} -line_width 0 >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
-	wait
+# for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+# do
+# # Remove low complexity reads from merged files
+# 	perl ${PRINSEQ_LITE} -fastq ${SEQPREP_OUTPUT}/${SAMPLE}_merged.fastq -out_good ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered -out_bad null -lc_method ${COMPLEXITY_METHOD} -lc_threshold ${COMPLEXITY_THRESHOLD} -line_width 0 >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# 	wait
 
-# Remove low complexity reads from unmerged files
-	perl ${COMBINE_PAIRED_END_READS} ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
-	wait
-	perl ${PRINSEQ_LITE} -fastq ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.fastq -out_good ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered -out_bad null -lc_method ${COMPLEXITY_METHOD} -lc_threshold ${COMPLEXITY_THRESHOLD} -line_width 0 >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
-	wait
-	perl ${SPLIT_PAIRED_END_READS} ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
-	wait
-	mv ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq_1 ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
-	wait
-	mv ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq_2 ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# # Remove low complexity reads from unmerged files
+# 	perl ${COMBINE_PAIRED_END_READS} ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# 	wait
+# 	perl ${PRINSEQ_LITE} -fastq ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.fastq -out_good ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered -out_bad null -lc_method ${COMPLEXITY_METHOD} -lc_threshold ${COMPLEXITY_THRESHOLD} -line_width 0 >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# 	wait
+# 	perl ${SPLIT_PAIRED_END_READS} ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# 	wait
+# 	mv ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq_1 ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# 	wait
+# 	mv ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq_2 ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
 
-# Compress raw merged and unmerged files and remove intermediates
-	wait
-	gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*merged.fastq
-	wait
-	rm -f ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined*.fastq
-	wait
-done
-wait
-echo "...Low complexity reads have been filtered" >> ${PREFIX}_progress_file_${DATE}.txt
+# # Compress raw merged and unmerged files and remove intermediates
+# 	wait
+# 	gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*merged.fastq
+# 	wait
+# 	rm -f ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined*.fastq
+# 	wait
+# done
+# wait
+# echo "...Low complexity reads have been filtered" >> ${PREFIX}_progress_file_${DATE}.txt
 
 
 ### BWA -- aligning reads to a reference sequence
@@ -389,39 +389,40 @@ echo "...Low complexity reads have been filtered" >> ${PREFIX}_progress_file_${D
 
 # ### MEGAN and MIA -- Initial data processing
  
-# for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-# do
+for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+do
 
-# # Concatenate merged and unmerged reads - MEGAN and MIA
-# 	cat ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.complexity_filtered.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.complexity_filtered.fastq > ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.fastq
-# 	wait
+# Concatenate merged and unmerged reads - MEGAN and MIA
+	cat ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.complexity_filtered.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.complexity_filtered.fastq > ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.fastq
+	wait
 
-# # Convert FASTQ to FASTA - MEGAN and MIA
-# 	${FASTX_TOOLKIT}/fastq_to_fasta/fastq_to_fasta -n -Q33 -r -i ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.fastq -o ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.fasta
-# 	wait
+# Convert FASTQ to FASTA - MEGAN and MIA
+	${FASTX_TOOLKIT}/fastq_to_fasta/fastq_to_fasta -n -Q33 -r -i ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.fastq -o ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.fasta
+	wait
 
-# # Collapse identical reads - forward, reverse, and 5' duplicates - MEGAN and MIA
-# 	perl ${PRINSEQ_LITE} -fasta ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.fasta -out_good ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed -out_bad null -derep 124 -line_width 0
-# 	wait
+# Collapse identical reads - forward, reverse, and 5' duplicates - MEGAN and MIA
+	perl ${PRINSEQ_LITE} -fasta ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.fasta -out_good ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed -out_bad null -derep 124 -line_width 0
+	wait
 
-# # Remove FASTA and compress FASTQ files
-# 	rm -f ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.fasta
-# 	wait
-# done
-# wait
-# echo "...File setup for MEGAN and/or MIA is complete." >> ${PREFIX}_progress_file_${DATE}.txt
+# Remove FASTA and compress FASTQ files
+	rm -f ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.fasta
+	wait
+done
+wait
+echo "...File setup for MEGAN and/or MIA is complete." >> ${PREFIX}_progress_file_${DATE}.txt
 
 
-# ### MEGAN -- metagenomic analysis. What is the taxonomic makeup of my sequence data?
+### MEGAN -- metagenomic analysis. What is the taxonomic makeup of my sequence data?
 
-# for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-# do
+for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+do
 
-# # Compare reads to BLAST database
-# 	blastn -num_threads ${MEGAN_THREADS} -query ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.fasta -db ${BLAST_DATABASE} -outfmt 6 -out ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt # TODO: Set log file
-# done
-# wait
-# echo "...Comparing reads to BLAST database is done." >> ${PREFIX}_progress_file_${DATE}.txt
+# Compare reads to BLAST database
+	blastn -num_threads ${MEGAN_THREADS} -query ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.fasta -db ${BLAST_DATABASE} -outfmt 6 -out ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt # TODO: Set log file
+	gzip ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt
+done
+wait
+echo "...Comparing reads to BLAST database is done." >> ${PREFIX}_progress_file_${DATE}.txt
 
 
 # ### MIA --- Option 1 -- creating a consensus using iterative mapping - use this with shotgun data
@@ -483,7 +484,7 @@ echo "...Low complexity reads have been filtered" >> ${PREFIX}_progress_file_${D
 
 # gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fastq
 # gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*.fasta
-# gzip ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt
+
 
 # echo "...Large files are gzipped."
 
@@ -494,5 +495,5 @@ echo "...Low complexity reads have been filtered" >> ${PREFIX}_progress_file_${D
 # mv ${PREFIX}-sample-list-${DATE}.txt ${PROCESSING_OUTPUT}/Sample_lists_and_progress_files
 # mv ${PREFIX}_progress_file_${DATE}.txt ${PROCESSING_OUTPUT}/Sample_lists_and_progress_files
 
-echo "Pre-Mapping steps are complete."
+echo "Blastn is complete."
 echo "#######################################################"
