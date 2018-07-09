@@ -432,8 +432,8 @@ echo "...File setup for MEGAN and/or MIA is complete." >> ${PREFIX}_progress_fil
 for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
 do
  	/soe/pheintzman/bin/mia-1.0/src/mia -r ${MIA_REFERENCE_SEQUENCE} -f ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered.fastq -c -C -U -s ${ANCIENT_DNA_MATRIX} -i -F -k 14 -m ${MIA_OUTPUT}/${SAMPLE}_merged.complexity_filtered.${MIA_REFERENCE_NAME}.maln >> ${MIA_OUTPUT}/${SAMPLE}_MIA.log.txt 2>&1
- 	wait
- 	gzip ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered.fastq
+ 	# wait
+ 	# gzip ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered.fastq
 wait
 done
  
