@@ -366,7 +366,7 @@ echo "...Fragment length distribution data has been computed" >> ${PREFIX}_progr
 
 for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
 do
-	/soe/pheintzman/bin/mapDamage -i ${BWA_OUTPUT}/${SAMPLE}_all_reads.complexity_filtered.${REFERENCE_NAME}.sorted.bam -r ${REFERENCE_SEQUENCE} --merge-reference-sequences -l 200 -d ${PROCESSING_OUTPUT}/MapDamage_output/mapDamage_${SAMPLE}_${REFERENCE_NAME} -y 0.5 -m 25 -t ${SAMPLE} >> ${PROCESSING_OUTPUT}/MapDamage_output/mapDamage_${SAMPLE}_${REFERENCE_NAME}/${SAMPLE}_mapdamage.log.txt 2>&1
+	/soe/pheintzman/bin/mapDamage -i ${BWA_OUTPUT}/${SAMPLE}_all_reads.complexity_filtered.${REFERENCE_NAME}.sorted.bam -r ${REFERENCE_SEQUENCE} --merge-reference-sequences -l 200 -d ${PROCESSING_OUTPUT}/MapDamage_output/mapDamage_${SAMPLE}_${REFERENCE_NAME} -y 0.5 -m 25 -t ${SAMPLE} >> ${PROCESSING_OUTPUT}/MapDamage_output/${SAMPLE}_${REFERENCE_NAME}_mapdamage.log.txt 2>&1
 
 done
 wait
