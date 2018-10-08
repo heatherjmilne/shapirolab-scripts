@@ -325,7 +325,7 @@ SPLIT_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts
 
 # # Remove duplicates and index
 # 	# /soe/aesoares/bin/samtools019 rmdup -S ${BWA_OUTPUT}/${SAMPLE}_all_reads.complexity_filtered.${REFERENCE_NAME}.sorted.bam ${BWA_OUTPUT}/${SAMPLE}_all_reads.complexity_filtered.${REFERENCE_NAME}.sorted.rmdup.bam
-# 	/projects/redser3-notbackedup/projects/nsaremi/bin/samtools-0.1.19 rmdup -S ${BWA_OUTPUT}/${SAMPLE}_all_reads.complexity_filtered.${REFERENCE_NAME}.sorted.bam ${BWA_OUTPUT}/${SAMPLE}_all_reads.complexity_filtered.${REFERENCE_NAME}.sorted.rmdup.bam >> ${BWA_OUTPUT}/${SAMPLE}_rmdup.log.txt 2>&1
+# 	/soe/hjmilne/bin/samtools-0.1.19/samtools rmdup -S ${BWA_OUTPUT}/${SAMPLE}_all_reads.complexity_filtered.${REFERENCE_NAME}.sorted.bam ${BWA_OUTPUT}/${SAMPLE}_all_reads.complexity_filtered.${REFERENCE_NAME}.sorted.rmdup.bam >> ${BWA_OUTPUT}/${SAMPLE}_rmdup.log.txt 2>&1
 # 	samtools index ${BWA_OUTPUT}/${SAMPLE}_all_reads.complexity_filtered.${REFERENCE_NAME}.sorted.rmdup.bam >> ${BWA_OUTPUT}/${SAMPLE}_rmdup.log.txt 2>&1
 # 	wait
 
