@@ -28,7 +28,7 @@
 #   This version is designed specifically to be used with Rachel Turba's clam samples,
 #   for which I have 3 nuclear genomes each and 3 mitogenomes. It doesn't make sense
 #   to run the entire script 3 times.
-#   This is the PRE-MAPPING script, which runs SeqPrep and Blastn.
+#   This is the MITO MAPPING script, which runs MIA.
 #   Changes to this version:
 #   1. Each program (ie MapDamage, blastn) run outputs its own log file for easier error handling.
 #   2. blastn outputs in tabular format (-outfmt 6) for use with MEGAN software
@@ -63,10 +63,10 @@
 echo "Number of arguments: $#"
 # test if we have enough arguments, exit with warning if we don't
 
-if [ $# -lt 3 ] ### There was a TYPO here!! changed to -lt from -ge
+if [ $# -lt 4 ] ### There was a TYPO here!! changed to -lt from -ge
 then
 	echo "Not enough arguments!"
-	echo "Usage $0 -p=[prefix] -dir=[fastq_path] -t=[taxon]"
+	echo "Usage $0 -p=[prefix] -dir=[fastq_path] -t=[taxon] -ref=[ref_fasta_path] -refname=[ref_name] -mref=[mito_fasta_path] -mname=[mito_name]"
 	exit 1
 fi
 
@@ -83,17 +83,17 @@ case $i in
 	echo "PREFIX=${PREFIX}"
 	shift
 	;;
-	-dir=*|--raw-read-dir=*)
-	RAW_READ_DIRECTORY="${i#*=}"
-	if [ -e "$RAW_READ_DIRECTORY" ]
-	then
-    	echo "RAW READ DIRECTORY=${RAW_READ_DIRECTORY}"
-	else
-    	echo "RAW READ DIRECTORY $RAW_READ_DIRECTORY does not exist, exiting script"
-    	exit 1
-	fi
-	shift
-	;;
+	# -dir=*|--raw-read-dir=*)
+	# RAW_READ_DIRECTORY="${i#*=}"
+	# if [ -e "$RAW_READ_DIRECTORY" ]
+	# then
+ #    	echo "RAW READ DIRECTORY=${RAW_READ_DIRECTORY}"
+	# else
+ #    	echo "RAW READ DIRECTORY $RAW_READ_DIRECTORY does not exist, exiting script"
+ #    	exit 1
+	# fi
+	# shift
+	# ;;
 	-t=*|--taxon=*)
 	TAXON="${i#*=}"
 	echo "TAXON=$TAXON"
@@ -115,27 +115,27 @@ case $i in
 	# echo "REFERENCE NAME=$REFERENCE_NAME"
 	# shift
 	# ;;
-	# -mref=*|--mito-ref-fasta=*)
-	# MIA_REFERENCE_SEQUENCE="${i#*=}"
-	# if [ -e "$MIA_REFERENCE_SEQUENCE" ]
-	# then
- #    	echo "MIA REFERENCE SEQUENCE=$MIA_REFERENCE_SEQUENCE"
-	# else
- #    	echo "MIA REFERENCE SEQUENCES $MIA_REFERENCE_SEQUENCE does not exist, exiting script"
- #    	exit 1
-	# fi
-	# shift
-	# ;;
-	# -mname=*|--mito-ref-name=*)
-	# MIA_REFERENCE_NAME="${i#*=}"
-	# echo "MIA REFERENCE NAME=$MIA_REFERENCE_NAME"
-	# shift
-	# ;;
+	-mref=*|--mito-ref-fasta=*)
+	MIA_REFERENCE_SEQUENCE="${i#*=}"
+	if [ -e "$MIA_REFERENCE_SEQUENCE" ]
+	then
+    	echo "MIA REFERENCE SEQUENCE=$MIA_REFERENCE_SEQUENCE"
+	else
+    	echo "MIA REFERENCE SEQUENCES $MIA_REFERENCE_SEQUENCE does not exist, exiting script"
+    	exit 1
+	fi
+	shift
+	;;
+	-mname=*|--mito-ref-name=*)
+	MIA_REFERENCE_NAME="${i#*=}"
+	echo "MIA REFERENCE NAME=$MIA_REFERENCE_NAME"
+	shift
+	;;
 esac
 done
 
 
-mkdir ${PWD}/${PREFIX}_shotgun_data_processing_${DATE} # output is created in the same folder, where you run the script.
+# mkdir ${PWD}/${PREFIX}_shotgun_data_processing_${DATE} # output is created in the same folder, where you run the script.
 
 # General envelopes
 PROCESSING_OUTPUT=${PWD}/${PREFIX}_shotgun_data_processing_${DATE}
@@ -146,17 +146,17 @@ CALC_STATS=/projects/redser3-notbackedup/projects/alisa_beringia/scripts/calcula
 ### Initial setting up of directories
 
 cd ${RAW_READ_DIRECTORY}
-bash ${GET_SAMPLES} ${PREFIX} f > ${PROCESSING_OUTPUT}/${PREFIX}-sample-list-${DATE}.txt
+# bash ${GET_SAMPLES} ${PREFIX} f > ${PROCESSING_OUTPUT}/${PREFIX}-sample-list-${DATE}.txt
 
 cd ${PROCESSING_OUTPUT}
 
-mkdir Sample_lists_and_progress_files
-mkdir Raw_data_symlinks
-mkdir SeqPrep_output
+# mkdir Sample_lists_and_progress_files
+# mkdir Raw_data_symlinks
+# mkdir SeqPrep_output
 # mkdir BWA_analyses
 # mkdir MapDamage_output
 # mkdir MEGAN_analyses
-# mkdir MIA_analyses
+mkdir MIA_analyses
 
 
 
@@ -167,8 +167,8 @@ SEQPREP_MIN_LENGTH=30                                 	# Removes unmappably shor
 SEQPREP_OVERLAP=15                                 	    # Allows for confident merging of reads. Can be reduced to 10 if needed.
 SEQPREP_LOCATION=/soe/pheintzman/bin/SeqPrep2-master	# To find SeqPrep, if using edser2
 
-echo "Minimum read length is set to $SEQPREP_MIN_LENGTH."
-echo "Merging reads overlapping at $SEQPREP_OVERLAP bases."
+# echo "Minimum read length is set to $SEQPREP_MIN_LENGTH."
+# echo "Merging reads overlapping at $SEQPREP_OVERLAP bases."
 # BWA and SAMtools envelopes
 
 BWA_OUTPUT=${PROCESSING_OUTPUT}/BWA_analyses	                                                # A directory to store BWA intermediate files and output   
@@ -196,6 +196,7 @@ MEGAN_OUTPUT=${PROCESSING_OUTPUT}/MEGAN_analyses                           # A d
 BLAST_DATABASE=/projects/redser3-notbackedup/ftp/NCBI/BLAST/blastdb/nt     # Location of the BLAST database 
 MEGAN_THREADS=15                                                           # To speed up analysis
 
+
 # MIA envelopes
 
 MIA_OUTPUT=${PROCESSING_OUTPUT}/MIA_analyses
@@ -205,6 +206,7 @@ FASTX_TOOLKIT=/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src
 MIA_COVERAGE_FILTER_ANDRE=/projects/redser3-notbackedup/projects/common_jobs/coverage_filter_3.pl
 
 # Prinseq envelopes
+
 PRINSEQ_LITE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl
 PRINSEQ_GRAPHS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-graphs.pl
 PRINSEQ_STATS=${PROCESSING_OUTPUT}/PRINSEQ_stats
@@ -214,66 +216,67 @@ COMBINE_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scrip
 SPLIT_PAIRED_END_READS=/projects/redser3-notbackedup/projects/pheintzman/Scripts/splitPairedEndReads.pl
 
 
+
 # Other envelopes
 
-# GET_INSERT_SIZE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/getinsertsize.py
+GET_INSERT_SIZE=/projects/redser3-notbackedup/projects/pheintzman/Scripts/getinsertsize.py
 
 
-for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-do
-	gzip -d ${RAW_READ_DIRECTORY}/${SAMPLE}*.fastq.gz
-	wait
-	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L001_R1_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R1_001.fastq
-	wait
-	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L001_R2_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R2_001.fastq
-	wait
-done
-wait
-echo "...Initial data processing is complete" >> ${PREFIX}_progress_file_${DATE}.txt
+# for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+# do
+# 	gzip -d ${RAW_READ_DIRECTORY}/${SAMPLE}*.fastq.gz
+# 	wait
+# 	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L001_R1_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R1_001.fastq
+# 	wait
+# 	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L001_R2_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R2_001.fastq
+# 	wait
+# done
+# wait
+# echo "...Initial data processing is complete" >> ${PREFIX}_progress_file_${DATE}.txt
 
 ### SeqPrep -- removing adapters and merging reads. Overlap (-o) is set to 20, minimum length (-l) is set to 25, minimum quality (-q) is set to 15.
 
-for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-do
-	${SEQPREP_LOCATION}/SeqPrep2 -f ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R1_001.fastq -r ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R2_001.fastq -1 ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.fastq.gz -2 ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.fastq.gz -q 15 -L ${SEQPREP_MIN_LENGTH} -A AGATCGGAAGAGCACACGTC -B AGATCGGAAGAGCGTCGTGT -s ${SEQPREP_OUTPUT}/${SAMPLE}_merged.fastq.gz -E ${SEQPREP_OUTPUT}/${SAMPLE}_readable_alignment.txt.gz -o ${SEQPREP_OVERLAP} -d 1 -C ATCTCGTATGCCGTCTTCTGCTTG -D GATCTCGGTGGTCGCCGTATCATT >> ${SEQPREP_OUTPUT}/${SAMPLE}_SeqPrep.log.txt 2>&1
-	wait
-	gzip -d ${SEQPREP_OUTPUT}/${SAMPLE}*.gz
-	wait
-	gzip ${RAW_READ_DIRECTORY}/${SAMPLE}*.fastq
-	wait
-done
-wait
-echo "...Adapter trimming and merging of reads is complete" >> ${PREFIX}_progress_file_${DATE}.txt
+# for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+# do
+# 	${SEQPREP_LOCATION}/SeqPrep2 -f ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R1_001.fastq -r ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R2_001.fastq -1 ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.fastq.gz -2 ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.fastq.gz -q 15 -L ${SEQPREP_MIN_LENGTH} -A AGATCGGAAGAGCACACGTC -B AGATCGGAAGAGCGTCGTGT -s ${SEQPREP_OUTPUT}/${SAMPLE}_merged.fastq.gz -E ${SEQPREP_OUTPUT}/${SAMPLE}_readable_alignment.txt.gz -o ${SEQPREP_OVERLAP} -d 1 -C ATCTCGTATGCCGTCTTCTGCTTG -D GATCTCGGTGGTCGCCGTATCATT >> ${SEQPREP_OUTPUT}/${SAMPLE}_SeqPrep.log.txt 2>&1
+# 	wait
+# 	gzip -d ${SEQPREP_OUTPUT}/${SAMPLE}*.gz
+# 	wait
+# 	gzip ${RAW_READ_DIRECTORY}/${SAMPLE}*.fastq
+# 	wait
+# done
+# wait
+# echo "...Adapter trimming and merging of reads is complete" >> ${PREFIX}_progress_file_${DATE}.txt
 
 
 ### Filtering reads for low complexity sequences
 
-for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-do
-# Remove low complexity reads from merged files
-	perl ${PRINSEQ_LITE} -fastq ${SEQPREP_OUTPUT}/${SAMPLE}_merged.fastq -out_good ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered -out_bad null -lc_method ${COMPLEXITY_METHOD} -lc_threshold ${COMPLEXITY_THRESHOLD} -line_width 0 >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
-	wait
+# for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+# do
+# # Remove low complexity reads from merged files
+# 	perl ${PRINSEQ_LITE} -fastq ${SEQPREP_OUTPUT}/${SAMPLE}_merged.fastq -out_good ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered -out_bad null -lc_method ${COMPLEXITY_METHOD} -lc_threshold ${COMPLEXITY_THRESHOLD} -line_width 0 >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# 	wait
 
-# Remove low complexity reads from unmerged files
-	perl ${COMBINE_PAIRED_END_READS} ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
-	wait
-	perl ${PRINSEQ_LITE} -fastq ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.fastq -out_good ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered -out_bad null -lc_method ${COMPLEXITY_METHOD} -lc_threshold ${COMPLEXITY_THRESHOLD} -line_width 0 >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
-	wait
-	perl ${SPLIT_PAIRED_END_READS} ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
-	wait
-	mv ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq_1 ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
-	wait
-	mv ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq_2 ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# # Remove low complexity reads from unmerged files
+# 	perl ${COMBINE_PAIRED_END_READS} ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.fastq ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# 	wait
+# 	perl ${PRINSEQ_LITE} -fastq ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.fastq -out_good ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered -out_bad null -lc_method ${COMPLEXITY_METHOD} -lc_threshold ${COMPLEXITY_THRESHOLD} -line_width 0 >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# 	wait
+# 	perl ${SPLIT_PAIRED_END_READS} ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# 	wait
+# 	mv ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq_1 ${SEQPREP_OUTPUT}/${SAMPLE}_R1_unmerged.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
+# 	wait
+# 	mv ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined.complexity_filtered.fastq_2 ${SEQPREP_OUTPUT}/${SAMPLE}_R2_unmerged.complexity_filtered.fastq >> ${SEQPREP_OUTPUT}/${SAMPLE}_complexity_filtering.log.txt 2>&1
 
-# Compress raw merged and unmerged files and remove intermediates
-	wait
-	gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*merged.fastq
-	wait
-	rm -f ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined*.fastq
-	wait
-done
-wait
-echo "...Low complexity reads have been filtered" >> ${PREFIX}_progress_file_${DATE}.txt
+# # Compress raw merged and unmerged files and remove intermediates
+# 	wait
+# 	gzip ${SEQPREP_OUTPUT}/${SAMPLE}_*merged.fastq
+# 	wait
+# 	rm -f ${SEQPREP_OUTPUT}/${SAMPLE}_unmerged_combined*.fastq
+# 	wait
+# done
+# wait
+# echo "...Low complexity reads have been filtered" >> ${PREFIX}_progress_file_${DATE}.txt
 
 
 ### BWA -- aligning reads to a reference sequence
@@ -370,9 +373,9 @@ echo "...Low complexity reads have been filtered" >> ${PREFIX}_progress_file_${D
 # echo "...mapDamage plot created" >> ${PREFIX}_progress_file_${DATE}.txt
 
 
-# ### Remove intermediate BWA files to save space on edser
+### Remove intermediate BWA files to save space on edser
 
-# # Remove intermediate BWA files - these take up a lot of space
+# Remove intermediate BWA files - these take up a lot of space
 # for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
 # do
 # 	rm -f ${BWA_OUTPUT}/${SAMPLE}*${REFERENCE_NAME}.sam
@@ -414,23 +417,23 @@ echo "...File setup for MEGAN and/or MIA is complete." >> ${PREFIX}_progress_fil
 
 # ### MEGAN -- metagenomic analysis. What is the taxonomic makeup of my sequence data?
 
-for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-do
+# for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+# do
 
-# Compare reads to BLAST database
-	blastn -num_threads ${MEGAN_THREADS} -query ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.fasta -db ${BLAST_DATABASE} -outfmt 6 -out ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt # TODO: Set log file
-done
-wait
-echo "...Comparing reads to BLAST database is done." >> ${PREFIX}_progress_file_${DATE}.txt
+# # Compare reads to BLAST database
+# 	blastn -num_threads ${MEGAN_THREADS} -query ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.fasta -db ${BLAST_DATABASE} -outfmt 6 -out ${MEGAN_OUTPUT}/${SAMPLE}_all_seqprep.duplicates_removed.BLAST.txt # TODO: Set log file
+# done
+# wait
+# echo "...Comparing reads to BLAST database is done." >> ${PREFIX}_progress_file_${DATE}.txt
 
 
-# ### MIA --- Option 1 -- creating a consensus using iterative mapping - use this with shotgun data
+### MIA --- Option 1 -- creating a consensus using iterative mapping - use this with shotgun data
  
 # for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
 # do
 #  	/soe/pheintzman/bin/mia-1.0/src/mia -r ${MIA_REFERENCE_SEQUENCE} -f ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered.fastq -c -C -U -s ${ANCIENT_DNA_MATRIX} -i -F -k 14 -m ${MIA_OUTPUT}/${SAMPLE}_merged.complexity_filtered.${MIA_REFERENCE_NAME}.maln >> ${MIA_OUTPUT}/${SAMPLE}_MIA.log.txt 2>&1
-#  	wait
-#  	gzip ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered.fastq
+#  	# wait
+#  	# gzip ${SEQPREP_OUTPUT}/${SAMPLE}_merged.complexity_filtered.fastq
 # wait
 # done
  
@@ -452,32 +455,32 @@ echo "...Comparing reads to BLAST database is done." >> ${PREFIX}_progress_file_
 # wait
 # echo "...MIA analyses are complete" >> ${PREFIX}_progress_file_${DATE}.txt 
 
-# # ### MIA --- Option 2 --- creating a consensus using iterative mapping - use this with capture data
+### MIA --- Option 2 --- creating a consensus using iterative mapping - use this with capture data
 
-# # for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-# # do
-# # 	/soe/pheintzman/bin/mia-1.0/src/mia -r ${MIA_REFERENCE_SEQUENCE} -f ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.fasta -c -C -U -s ${ANCIENT_DNA_MATRIX} -i -F -k 14 -m ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln
-# # 	wait
-# # 	gzip ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.fasta
-# # 	wait
-# # done
+for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+do
+	/soe/pheintzman/bin/mia-1.0/src/mia -r ${MIA_REFERENCE_SEQUENCE} -f ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.fasta -c -C -U -s ${ANCIENT_DNA_MATRIX} -i -F -k 14 -m ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln
+	wait
+	gzip ${SEQPREP_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.fasta
+	wait
+done
 
-# # for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
-# # do
-# # 	/soe/pheintzman/bin/mia-1.0/src/ma -M ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.* -f 3 > ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.mia_stats.txt
-# # 	wait
-# # 	/soe/pheintzman/bin/mia-1.0/src/ma -M ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.* -f 2 > ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.mia_coverage_per_site.txt
-# # 	wait
-# # 	/soe/pheintzman/bin/mia-1.0/src/ma -M ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.* -f 5 > ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.mia_consensus.fasta
-# # 	wait
-# # 	/soe/pheintzman/bin/mia-1.0/src/ma -M ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.* -f 41 > ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.inputfornext.txt
-# # 	wait
-# # 	perl ${MIA_COVERAGE_FILTER_ANDRE} -c 3 -p 0.67 -I ${SAMPLE}_3x_0.67 <${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.inputfornext.txt >${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.mia_consensus.3x_0.67_filtered.fasta 
-# # 	wait
-# # 	perl ${MIA_COVERAGE_FILTER_ANDRE} -c 10 -p 0.9 -I ${SAMPLE}_10x_0.9 <${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.inputfornext.txt >${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.mia_consensus.10x_0.9_filtered.fasta 
-# # done
-# # wait
-# # echo "11. MIA analyses are complete" >> ${PREFIX}_progress_file_${DATE}.txt
+for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
+do
+	/soe/pheintzman/bin/mia-1.0/src/ma -M ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.* -f 3 > ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.mia_stats.txt
+	wait
+	/soe/pheintzman/bin/mia-1.0/src/ma -M ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.* -f 2 > ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.mia_coverage_per_site.txt
+	wait
+	/soe/pheintzman/bin/mia-1.0/src/ma -M ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.* -f 5 > ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.mia_consensus.fasta
+	wait
+	/soe/pheintzman/bin/mia-1.0/src/ma -M ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.* -f 41 > ${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.inputfornext.txt
+	wait
+	perl ${MIA_COVERAGE_FILTER_ANDRE} -c 3 -p 0.67 -I ${SAMPLE}_3x_0.67 <${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.inputfornext.txt >${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.mia_consensus.3x_0.67_filtered.fasta 
+	wait
+	perl ${MIA_COVERAGE_FILTER_ANDRE} -c 10 -p 0.9 -I ${SAMPLE}_10x_0.9 <${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.inputfornext.txt >${MIA_OUTPUT}/${SAMPLE}_all_seqprep.complexity_filtered.duplicates_removed.${MIA_REFERENCE_NAME}.20M.maln.F.mia_consensus.10x_0.9_filtered.fasta 
+done
+wait
+echo "11. MIA analyses are complete" >> ${PREFIX}_progress_file_${DATE}.txt
 
 # cd ${PROCESSING_OUTPUT}
 
@@ -494,5 +497,5 @@ echo "...Comparing reads to BLAST database is done." >> ${PREFIX}_progress_file_
 # mv ${PREFIX}-sample-list-${DATE}.txt ${PROCESSING_OUTPUT}/Sample_lists_and_progress_files
 # mv ${PREFIX}_progress_file_${DATE}.txt ${PROCESSING_OUTPUT}/Sample_lists_and_progress_files
 
-echo "Pre-Mapping steps are complete."
+echo "Mitogenome alignment steps are complete."
 echo "#######################################################"
