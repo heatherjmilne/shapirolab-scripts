@@ -223,9 +223,9 @@ for SAMPLE in $(cat ${PREFIX}-sample-list-${DATE}.txt)
 do
 	gzip -d ${RAW_READ_DIRECTORY}/${SAMPLE}*.fastq.gz
 	wait
-	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L001_R1_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R1_001.fastq
+	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L*_R1_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R1_001.fastq
 	wait
-	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L001_R2_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R2_001.fastq
+	ln -s ${RAW_READ_DIRECTORY}/${SAMPLE}_L*_R2_001.fastq ${PROCESSING_OUTPUT}/Raw_data_symlinks/${SAMPLE}_L001_R2_001.fastq
 	wait
 done
 wait
