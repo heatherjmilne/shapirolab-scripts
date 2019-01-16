@@ -3,10 +3,6 @@
 import sys, os
 # Used to calculate the average length of fragments from the lgdistribution.txt file produced by mapdamage.
 
-inputfile = sys.argv[1]
-pathname = os.path.abspath(os.path.dirname(inputfile))
-#print(pathname)
-
 def calc_avg_length(filename):
 	len_sum = 0
 	count = 0
@@ -45,14 +41,18 @@ def write_output(avg, stdev, filename):
 	output.close()
 	print "Output written to ", filename
 
+i=1
+while i < len(sys.argv):
+	inputfile = sys.argv[i]
+	pathname = os.path.abspath(os.path.dirname(inputfile))
+	#print(pathname)
+	outputfile = pathname + "/avg_length.txt"
+	#print(outputfile)
+	hist_avg, hist_values = calc_avg_length(inputfile)
+	hist_stdev = calc_std_dev(hist_avg, hist_values)
+	write_output(hist_avg, hist_stdev, outputfile)
+	i+=1
 
-
-outputfile = pathname + "/avg_length.txt"
-#print(outputfile)
-
-hist_avg, hist_values = calc_avg_length(inputfile)
-hist_stdev = calc_std_dev(hist_avg, hist_values)
-write_output(hist_avg, hist_stdev, outputfile)
 
 
 
