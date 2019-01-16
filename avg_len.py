@@ -14,7 +14,10 @@ def calc_avg_length(filename):
 			len_sum += float(length)*float(freq)
 			count += float(freq)
 			vals.append((float(length), float(freq)))
-	avg = round(len_sum/count, 3)
+	if count == 0:
+		avg = 0
+	else:
+		avg = round(len_sum/count, 3)
 	print "Average: ", avg
 	print "Count: ", count
 	return avg, vals
