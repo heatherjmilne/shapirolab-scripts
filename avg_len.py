@@ -22,11 +22,14 @@ def calc_std_dev(avg, vals):
 	#vals should be a (value, frequency) tuple.
 	stdev = 0
 	count = 0
-	for pair in vals:
-		value, freq = pair[0], pair[1]
-		count += freq
-		stdev = freq*((value - avg)**2)
-	stdev = (stdev/(count - 1))**(0.5)
+	if len(vals) < 2:
+		stdev = 0
+	else:
+		for pair in vals:
+			value, freq = pair[0], pair[1]
+			count += freq
+			stdev = freq*((value - avg)**2)
+		stdev = (stdev/(count - 1))**(0.5)
 	print "Std Dev: ", stdev
 	return stdev
 
