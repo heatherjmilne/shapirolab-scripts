@@ -1,7 +1,7 @@
 #!bin/bash
 
 echo "Running..."
-for filename in ./*R2_001.fastq.gz; do
+for filename in $@; do
 	echo $filename
 	#Identify and unzip file
 	gunzip ${filename}
