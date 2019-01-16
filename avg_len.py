@@ -16,6 +16,7 @@ def calc_avg_length(filename):
 			vals.append((float(length), float(freq)))
 	avg = round(len_sum/count, 3)
 	print "Average: ", avg
+	print "Count: ", count
 	return avg, vals
 
 def calc_std_dev(avg, vals):
