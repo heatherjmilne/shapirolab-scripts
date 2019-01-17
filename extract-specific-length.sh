@@ -17,11 +17,11 @@ for filename in $@; do
 	#Search for all lines that are a particular length prior to the adapter sequence
 	#Output to the outfile in FASTQ format
 	grep -B 1 -A 2 "^[A-Z]\{$size\}AGATCGG" ${prefix}*.fastq > ${outfile}
-	sed -i '' '/--/d' ${outfile}
+	sed -i '/^--$/d' ${outfile}
 	gzip ${prefix}*_R2_001.fastq
 	#Now the file is in FASTQ - convert to FASTA
-	/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src/fastq_to_fasta/fastq_to_fasta -n -Q33 -r -i ${outfile} -o ${prefix}-${size}-42bp-R2_001.fasta
-	#gzip ${outfile}
+	/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src/fastq_to_fasta/fastq_to_fasta -n -Q33 -r -i ${outfile} -o ${prefix}-${size}bp-R2_001.fasta
+	gzip ${outfile}
 	#Close file
 done
 
