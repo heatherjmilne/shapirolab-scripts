@@ -20,7 +20,8 @@ for filename in $@; do
 	sed -i '/^--$/d' ${outfile}
 	gzip ${prefix}*_R2_001.fastq
 	#Now the file is in FASTQ - convert to FASTA
-	/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src/fastq_to_fasta/fastq_to_fasta -n -Q33 -r -i ${outfile} -o ${prefix}-${size}bp-R2_001.fasta
+	/soe/pheintzman/bin/fastx_toolkit-0.0.13.2/src/fastq_to_fasta/fastq_to_fasta -n -Q33 -r -i ${outfile} -o ${prefix}-${size}bp-R2.fasta
+	perl /projects/redser3-notbackedup/projects/pheintzman/Scripts/prinseq-lite.pl -fasta  ${prefix}-${size}bp-R2.fasta -out_good ${prefix}-${size}bp-R2.duplicates_removed -out_bad null -derep 124 -line_width 0
 	gzip ${outfile}
 	#Close file
 done
